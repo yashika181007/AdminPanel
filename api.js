@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const util = require('util');
 require('dotenv').config();
 
-
 const app = express();
 const PORTAPI = process.env.PORTAPI; 
 
