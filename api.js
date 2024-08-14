@@ -4,8 +4,11 @@ const bcrypt = require('bcrypt');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const util = require('util');
+require('dotenv').config();
+
 
 const app = express();
+const PORTAPI = process.env.PORT; 
 
 app.use(session({
     secret: 'megastore',
@@ -249,5 +252,4 @@ app.get('/logout', (req, res) => {
     });
 });
 
-const port = 3000;
-app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
+app.listen(PORTAPI, () => console.log(`Server running on http://localhost:${PORTAPI}`));
