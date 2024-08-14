@@ -170,7 +170,8 @@
             }, 1000);
           },
           error: function (xhr, status, error) {
-            $('#signupMessage').removeClass('success-box').addClass('error-box').text(xhr.responseJSON.error);
+console.log(error);
+$('#signupMessage').removeClass('success-box').addClass('error-box').text(xhr.responseJSON.error);
           }
         });
       });
