@@ -15,12 +15,13 @@ app.use(session({
 }));
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'megastores',
+    host: 'srv871.hstgr.io',
+    user: 'u510451310_megastore',
+    password: 'U510451310_megastore',
+    database: 'u510451310_megastore',
     waitForConnections: true,
-    connectionLimit: 10,
+    // connectionLimit: 10,
+    // queueLimit: 0
 });
 
 pool.query = util.promisify(pool.query); // Promisify for async/await
