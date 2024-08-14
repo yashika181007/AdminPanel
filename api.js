@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -9,12 +8,7 @@ require('dotenv').config();
 const app = express();
 const PORTAPI = process.env.PORTAPI; 
 
-app.use(session({
-    secret: 'megastore',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } 
-}));
+
 
 const pool = mysql.createPool({
     host: 'srv871.hstgr.io',
@@ -202,9 +196,7 @@ app.post('/:type/:id?', async (req, res) => {
                     return res.status(401).send('Invalid email/phone or password');
                 }
 
-                req.session.userId = user.id;
-                req.session.email = user.email;
-                req.session.phoneNumber = user.phoneNumber;
+
 
                 res.status(200).send('Login successful');
 
@@ -241,14 +233,6 @@ app.delete('/:type/:id', (req, res) => {
 });
 
 
-app.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).send('Could not log out');
-        } else {
-            res.status(200).send('Logout successful');
-        }
-    });
-});
+
 
 app.listen(PORTAPI, () => console.log(`Server running on http://localhost:${PORTAPI}`));
