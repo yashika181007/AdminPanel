@@ -8,7 +8,7 @@ require('dotenv').config();
 
 
 const app = express();
-const PORTAPI = process.env.PORT; 
+const PORTAPI = process.env.PORTAPI; 
 
 app.use(session({
     secret: 'megastore',
