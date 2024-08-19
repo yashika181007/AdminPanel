@@ -26,6 +26,26 @@ app.use(sessionMiddleware);
 app.use(flash());
 app.use(setMessage);
 
+const homeRoutes = require('./routes/homeroutes');
+const Adminrouter = require('./routes/Adminroutes');
+const Storeroutes = require('./routes/Storeroutes');
+const categoryroutes = require('./routes/categoryroutes');
+const subcategoryroutes = require('./routes/subcategoryroutes');
+const sub_subcategoryroutes = require('./routes/sub_subcategoryroutes');
+const Productroutes = require('./routes/Productroutes');
+const blogcategoryroutes = require('./routes/blogcategoryroutes');
+const blogpostroutes = require('./routes/blogpostroutes');
+
+app.use('/', homeRoutes);
+app.use('/', Adminrouter);
+app.use('/', Storeroutes); 
+app.use('/', categoryroutes); 
+app.use('/', subcategoryroutes); 
+app.use('/', sub_subcategoryroutes); 
+app.use('/', Productroutes); 
+app.use('/', blogcategoryroutes); 
+app.use('/', blogpostroutes);
+
 const executeQuery = async (sql, values = []) => {
     try {
         const [results] = await pool.query(sql, values);
@@ -369,26 +389,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-
-const homeRoutes = require('./routes/homeroutes');
-const Adminrouter = require('./routes/Adminroutes');
-const Storeroutes = require('./routes/Storeroutes');
-const categoryroutes = require('./routes/categoryroutes');
-const subcategoryroutes = require('./routes/subcategoryroutes');
-const sub_subcategoryroutes = require('./routes/sub_subcategoryroutes');
-const Productroutes = require('./routes/Productroutes');
-const blogcategoryroutes = require('./routes/blogcategoryroutes');
-const blogpostroutes = require('./routes/blogpostroutes');
-
-app.use('/', homeRoutes);
-app.use('/', Adminrouter);
-app.use('/', Storeroutes); 
-app.use('/', categoryroutes); 
-app.use('/', subcategoryroutes); 
-app.use('/', sub_subcategoryroutes); 
-app.use('/', Productroutes); 
-app.use('/', blogcategoryroutes); 
-app.use('/', blogpostroutes);
 
 const assetsPath = path.join(__dirname, 'assets');
 app.use('/assets', express.static(assetsPath));
