@@ -26,8 +26,6 @@ app.use(sessionMiddleware);
 app.use(flash());
 app.use(setMessage);
 
-
-// Async function to handle queries
 const executeQuery = async (sql, values = []) => {
     try {
         const [results] = await pool.query(sql, values);
@@ -105,7 +103,6 @@ app.post('/order', async (req, res) => {
     }
 });
 
-// Get All Stores
 app.get('/store', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM stores');
@@ -115,7 +112,6 @@ app.get('/store', async (req, res) => {
     }
 });
 
-// Get All Categories
 app.get('/category', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM category');
@@ -125,7 +121,6 @@ app.get('/category', async (req, res) => {
     }
 });
 
-// Get All Subcategories
 app.get('/subcategory', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM subcategory');
@@ -135,7 +130,6 @@ app.get('/subcategory', async (req, res) => {
     }
 });
 
-// Get All Sub-Subcategories
 app.get('/sub_subcategory', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM sub_subcategory');
@@ -145,7 +139,6 @@ app.get('/sub_subcategory', async (req, res) => {
     }
 });
 
-// Get All Products
 app.get('/products', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM products');
@@ -155,7 +148,6 @@ app.get('/products', async (req, res) => {
     }
 });
 
-// Get All Blog Categories
 app.get('/blogcategory', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM blogcat');
@@ -165,7 +157,6 @@ app.get('/blogcategory', async (req, res) => {
     }
 });
 
-// Get All Blog Posts
 app.get('/blogpost', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM blogpost');
@@ -175,7 +166,6 @@ app.get('/blogpost', async (req, res) => {
     }
 });
 
-// Get All Users
 app.get('/user', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM user_details');
@@ -185,7 +175,6 @@ app.get('/user', async (req, res) => {
     }
 });
 
-// Get Single Product
 app.get('/product', async (req, res) => {
     try {
         const results = await executeQuery('SELECT * FROM products');
@@ -195,7 +184,6 @@ app.get('/product', async (req, res) => {
     }
 });
 
-// Get Orders and Order Details
 app.get('/order', async (req, res) => {
     try {
         const results = await executeQuery('SELECT order_meta.*, `order`.*, products.* FROM order_meta INNER JOIN `order` ON order_meta.orderID = `order`.id INNER JOIN products ON products.id = order_meta.productID');
@@ -205,7 +193,6 @@ app.get('/order', async (req, res) => {
     }
 });
 
-// Get Order by ID
 app.get('/orders/:orderID', async (req, res) => {
     const orderID = req.params.orderID;
 
@@ -217,7 +204,6 @@ app.get('/orders/:orderID', async (req, res) => {
     };
 
 });
-// Get Single Entity by Type and ID
 app.get('/:type/:id', async (req, res) => {
     const { type, id } = req.params;
     let sql;
@@ -262,7 +248,6 @@ app.get('/:type/:id', async (req, res) => {
     }
 });
 
-// Create User
 app.post('/user', async (req, res) => {
     const { name, email, password, phoneNumber } = req.body;
 
@@ -280,7 +265,6 @@ app.post('/user', async (req, res) => {
     }
 });
 
-// Create or Login User
 app.post('/:type/:id?', async (req, res) => {
     const { type, id } = req.params;
 
@@ -336,7 +320,6 @@ app.post('/:type/:id?', async (req, res) => {
     }
 });
 
-// Delete Entity by Type and ID
 app.delete('/:type/:id', async (req, res) => {
     const { type, id } = req.params;
     let sql;
@@ -376,7 +359,6 @@ app.delete('/:type/:id', async (req, res) => {
     }
 });
 
-// Logout User
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
