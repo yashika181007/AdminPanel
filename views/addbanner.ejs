@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Add Banner</title>
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    .success-box {
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+      color: #3c763d;
+    }
+
+    .error-box {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+
+    .message-box {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    #drop-area {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      width: 100%;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #gallery {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .image-container {
+      text-align: center;
+      margin: 10px;
+    }
+
+    .image-container img {
+      width: 100px;
+      max-height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./header.ejs') %>
+  <%- include('./sidebar.ejs') %>
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Add Banner</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active">Add Banner</li>
+        </ol>
+      </nav>
+    </div>
+    <section class="section dashboard">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div id="Banner-message" class="message-box"></div>
+              <h5 class="card-title">Add Banner</h5>
+              <form id="" class="row g-3 needs-validation" novalidate action="/addbanner" id="Banner-form" method="POST" enctype="multipart/form-data">
+                <div class="col-12">
+                  <label for="stores" class="form-label">Stores:</label>
+                  <% if (stores && stores.length > 0) { %>
+                    <% stores.forEach((store, index) => { %>
+                      <div class="form-check">
+                        <input class="form-check-input store-checkbox" type="checkbox" name="storeId[]" value="<%= store.id %>" id="store<%= index %>" required>
+                        <label class="form-check-label" for="store<%= index %>">
+                          <%= store.store_name %>
+                        </label>
+                      </div>
+                    <% }); %>
+                  <% } else { %>
+                    <p>No stores available</p>
+                  <% } %>
+                </div>
+
+                <div class="col-12">
+                  <label for="title" class="form-label">Banner Title</label>
+                  <input type="text" class="form-control" id="title" name="title" required>
+                  <div class="valid-feedback">Looks good!</div>
+                  <div class="invalid-feedback">Please enter a valid Banner title.</div>
+                </div>
+
+                <div id="drop-area">
+                  <p>Drag & Drop your images here or click to select</p>
+                  <input type="file" id="fileElem" name="images" accept="image/*" multiple required>
+                  <div id="gallery"></div>
+                </div>
+
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <%- include('./footer.ejs') %>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Handle drag and drop image upload
+    let dropArea = document.getElementById('drop-area');
+    let fileElem = document.getElementById('fileElem');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false);
+    });
+
+    dropArea.addEventListener('drop', handleDrop, false);
+    fileElem.addEventListener('change', handleFiles, false);
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function handleDrop(e) {
+      let dt = e.dataTransfer;
+      let files = dt.files;
+      handleFiles(files);
+    }
+
+    function handleFiles(files) {
+      files = [...files];
+      files.forEach(previewFile);
+    }
+
+    function previewFile(file) {
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        let img = document.createElement('img');
+        img.src = reader.result;
+        let div = document.createElement('div');
+        div.classList.add('image-container');
+        div.innerHTML = `<img src="${reader.result}" title="${file.name}"><br><span>${file.name}</span> <span class="delete-img" onclick="removeImage(this)"><i class="bi bi-trash" style="color: red;"></i></span>`;
+        document.getElementById('gallery').appendChild(div);
+      }
+    }
+
+    function removeImage(element) {
+      let div = element.parentNode;
+      div.parentNode.removeChild(div);
+      fileElem.value = ''; // Clear file input
+    }
+
+    // Handle form submission
+    $(document).ready(function () {
+      $('#Banner-form').submit(function (event) {
+        event.preventDefault();
+        let formData = new FormData(this);
+
+        $.ajax({
+          type: 'POST',
+          url: '/addbanner',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            $('#Banner-message').removeClass('error-box').addClass('success-box').text(response.message);
+            setTimeout(function () {
+              window.location.href = '/addBanner';
+            }, 2000);
+          },
+          error: function (xhr, status, error) {
+            $('#Banner-message').removeClass('success-box').addClass('error-box').text(xhr.responseJSON.error);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
